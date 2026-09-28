@@ -25,6 +25,9 @@ agent\Scripts\activate
 # 환경 설정 파일
 - .env
 ```
+# .env.example 카피하여 구성
+# 추가, 뒤에 api는 별도 발급(Bedrock API 키 발급)하여 세팅
+AWS_BEARER_TOKEN_BEDROCK=
 
 ```
 
