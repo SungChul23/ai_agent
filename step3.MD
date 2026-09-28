@@ -22,3 +22,35 @@ L stpes/
     L step3_prompt_engineering.py : 프럼프트 엔지니어링 기술 적용하여 LLM 질의
 
 ```
+
+# 프롬포트 출력
+```
+당신은 B2B SaaS 전문 마케터입니다.
+
+# Context
+제품: AI 고객 상담 솔루션
+대상: 온라인 쇼핑물 CS팀
+
+# Task
+핵심 가치를 설명하는 홍보 문구를 작성하세요.
+
+# Constraints
+- 5줄 이내
+- 과장된 수치 금지
+- 마지막에 CTA 1문장
+
+```
+
+# 실행 결과
+```
+stopReason : end_turn
+usage      : {'inputTokens': 147, 'outputTokens': 174, 'totalTokens': 321, 'cacheReadInputTokens': 0, 'cacheWriteInputTokens': 0}
+block types: ['text']
+----------------------------------------
+반복되는 문의에 CS팀의 시간을 쏟지 마세요.
+AI가 자주 묻는 질문을 먼저 응대하고, 복잡한 상담만 팀원에게 연결합니다.
+고객은 더 빠른 답변을, CS팀은 더 여유로운 하루를 얻습니다.
+쇼핑몰 운영 환경에 맞춰 유연하게 적용할 수 있습니다.
+
+지금 바로 무료 데모를 신청해 보세요.
+```
