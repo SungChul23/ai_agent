@@ -12,3 +12,13 @@ L scripts/      : 환경설정, 관리, 실행등 보조 도구
     L doctor.py : git, docker, aws cli 진단 도구
 L step1.md      : step1 설명
 ```
+
+# 테스트 
+- scripts/doctor.py
+```
+python is installed.
+git is installed.
+aws is installed.
+docker is installed.
+docker-compose is installed.
+```
