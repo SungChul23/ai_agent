@@ -1,2 +1,3 @@
 agent/*
 .env
+steps/__pycache__
