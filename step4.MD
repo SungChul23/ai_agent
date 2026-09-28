@@ -11,9 +11,9 @@
 /
 L app
     L llm.py : LLM에 대한 모듈
-L step3
-    L step4_langchain_basic.py : 체인구성 (prompt | LLM)
 
+L steps
+    L step4_langchain_basic.py : 체인구성 (prompt | LLM)
 ```
 
 # 실행
