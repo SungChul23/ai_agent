@@ -10,7 +10,7 @@ load_dotenv()  # .env → 프로세스 환경변수로 등록 (getenv보다 먼�
 AWS_REGION = os.getenv("AWS_REGION", "us-east-1")
 BEDROCK_CHAT_MODEL_ID = os.getenv("BEDROCK_CHAT_MODEL_ID")
 BEDROCK_EMBEDDED_MODEL_ID = os.getenv("BEDROCK_EMBEDDED_MODEL_ID")
-DATABASE_URL = os.getenv("DATABASE_URL")
+DATABASE_URL = os.getenv("DATABASE_URL","postgresql://agent:agent@localhost:5432/agentlab")
 
 # 필수 값이 없으면 호출 단계까지 가지 말고 여기서 바로 알려줌
 if not BEDROCK_CHAT_MODEL_ID:
