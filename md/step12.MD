@@ -1,0 +1,25 @@
+# 목표
+- LangGraph + bedrock + LangChain + tools 
+- LangGraph
+    - StateGraph -> Agent -> ToolNode -> Agent 순환루프를 구성하는 자율형 에이전트 기본 구성
+    - Reason/Tool/Observe 루프 구성
+- 질의 -> 적절한 Tool을 LLM이 선택하고, Tool 사용, 결과를 이용하여 관찰 -> 최종 답변까지 반복 진행 체크
+
+# 구조
+```
+/
+L app
+    L agent
+        L __init__.py
+        L graph.py      : 랭그래프 구성 (노드 추가하는등 구성)
+        L prompts.py    : 에이전트의 프럼프트
+        L state.py      : 상태관리
+    L main.py           : 에이전트 구동
+L steps
+    L step12_langgraph_agent.py : 테스트 코드
+```
+
+# 실행
+```
+python -m steps.step12_langgraph_agent
+```
