@@ -23,8 +23,10 @@ L app
         L memory_tools.py   : sql 역활 담당, 기능적으로 메모리 역활
     L agent
         L graph.py          : 툴 등록
+    L config.py             : 사용자 아이디 환경변수 구성
 L steps
     L step14_memory.py      : 메모리 테스트
+L .env                      : 사용자 아이디 더미 구성 (1명을 위한 아이디임, 실제 제거)
 ```
 
 # sql 반영
@@ -35,4 +37,12 @@ python -m scripts.migrate
 
 # 테이블 구조 확인
 \d agent_memories
+
+# 컬럼명 잘못되어 잇으면 수정
+alter table agent_memories rename column used_id to user_id;
+```
+
+# 실행
+```
+python -m steps.step14_memory
 ```

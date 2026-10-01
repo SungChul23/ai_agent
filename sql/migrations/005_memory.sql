@@ -3,7 +3,7 @@
 CREATE TABLE IF NOT EXISTS agent_memories (    
     id BIGSERIAL PRIMARY KEY,
     -- 사용자별
-    used_id VARCHAR(100) NOT NULL,
+    user_id VARCHAR(100) NOT NULL,
     -- 메모리 타입
     memory_type VARCHAR(30) NOT NULL,    
     -- 저장할 내용
@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS agent_memories (
 );
 -- user_id 조건으로 특정 사용자의 기억을 빠르게 조회
 create index if not exists idx_memories_user
-on agent_memories(used_id);
+on agent_memories(user_id);
 
 -- 백터의 코사인 유사도로 빠른 검색 지원
 -- 의미 있는 유사한 기억 검색 속도 향상
