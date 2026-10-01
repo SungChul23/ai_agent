@@ -11,11 +11,11 @@ from langgraph.prebuilt import ToolNode, tools_condition # Tool 실행, 호출�
 from app.llm import get_chat_model # LLM 모델
 from app.agent.state import AgentState # 랭그래프상에서 상태관리용
 from app.agent.prompts import SYSTEM_PROMPT
-from app.tools.sql_tools import sales_summary, top_products  # SQL Tool
+from app.tools.sql_tools import sales_summary, top_products, refund_summary  # SQL Tool
 from app.tools.rag_tools import search_company_policy # rag tool
 
 # 2. 툴 목록 구성
-TOOLS = [sales_summary, top_products, search_company_policy]
+TOOLS = [sales_summary, top_products, refund_summary, search_company_policy]
 
 # 3. 그래프 빌드
 def build_graph():
