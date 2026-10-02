@@ -12,6 +12,24 @@ from app.retrieval import advanced_search
 # 성능평가
 # Top-K 검색 결과에 질문에 대한 기대문서가 포함되었느지 체크
 def main(k:int = 5):
+    # 결과를 담는 그릇
+    # hits : 기대 문서가 Top-k 검색 결과에 포함되었느지 기록
+    # reciprocal : 기대 문서의 검색 순위에 대한 역순위 기록 (1/rank)
+    hits, reciprocal = list(), list()
+
+    for case in CASES:
+        # 1. 질문과 k를 세팅해서 문서 검색 (RAG)
+        rows = advanced_search( case['question'], k=k)
+
+        # 2. 결과에서 문서 코드만 추출
+        #    row[0] : 결과셋의 첫번째 컬럼이 문서코드임
+        codes = [ row[0] for row in rows ]
+
+        # 3. 기대 정답(문서코드) 획득
+        expected = case['expected_source']
+
+        pass
+
     pass
 
 # 직접 실행 대비
