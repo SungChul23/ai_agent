@@ -20,6 +20,7 @@ from app.harness import ALLOWED_TOOLS, assert_allowed_tool, Budget
 
 # 최종 응답의 출력 형식 정의한 pydantic 모델
 from app.output import AgentResponse
+import time
 
 # 2. 툴 목록 구성
 TOOLS = [sales_summary, top_products, refund_summary, search_company_policy, remember_user_preference, recall_user_memory, get_exchange_rate]
@@ -38,6 +39,16 @@ def build_graph():
 
     # Agent 노드 -> 추론만 할것인가? 도구를 사용하여 결과를 가지고 추론을 할것인가?
     async def call_model(state:AgentState):
+        # 하네스 반영
+        started_at = state.get('started_at') or time.monotonic()
+        budget = Budget(
+            tool_rounds = state.get('tool_rounds', 0),
+            start_at    = started_at
+        )
+        # 체킹!!
+        budget.check()
+        # 하네스를 이용한 사전 점검 모두 완료. 정상적으로 에이전트 작동
+        
         # 1. 라운드 값 획득 (랭그래프내에서 순환을 몇번했는가?, LLM 추론을 몇번 했는가?) # Agent 수행 횟수
         rounds = state.get('rounds', 0)
         # 2. 라운드를 기점으로 모델 선택
@@ -49,7 +60,7 @@ def build_graph():
             [SystemMessage(content=SYSTEM_PROMPT), *state['messages']]
         )
         # 4. 추론결과, 라운드(LLM 1회 호출) + 1 하여 반환 -> state['messages']에 기록됨 => 상태관리
-        return {"messages":[response], "rounds": rounds+1}
+        return {"messages":[response], "rounds": rounds+1, "start_at":started_at}
 
     # Agent 최종 답변을 JSON으로 구조화 하는 노드
     async def format_ouptut(state:AgentState):        
@@ -122,23 +133,33 @@ def build_graph():
     # 하네스 노드 구성
     async def check_harness(state:AgentState):
         # 1. 실행 회수 제한
-        Budget(
-            
+        budget = Budget(
+            tool_rounds = state.get('tool_rounds', 0),
+            start_at    = state['start_at']
         )
-        # 2. 해당 도구가 허락되었는지 체크 가능 -> 구성!!
+        # 2. 체크(제한 사항, 툴 호출 제한, 툴 사용시간 제한)
+        budget.consume_tool_round()
+
+        # 3. 해당 도구가 허락되었는지 체크 가능 -> 구성!!
         #    히스토리상, 마지막 메세지에서 툴사용(tool_calls) 표식이 있는지 체크, 있다면 값 획득
         tool_calls = getattr(state["messages"][-1], "tool_calls", [])
         for call in tool_calls:
             assert_allowed_tool( call['name'] )
 
-        # 3. 수행시간? 이후 -> 위치 조정
-        pass
+        # 4. 증가된 툴 사용 횟수 저장
+        return {
+            "tool_rounds":budget.tool_rounds
+        }
     
     # 3-1. 그래프 생성
     graph = StateGraph( AgentState )            # 상태 정보를 가진 그래프 생성
     
     # 3-2. 노드 등록 (LLM 추론, 도구 )
     graph.add_node("agent", call_model)         # LLM Agent 노드 등록
+    
+    # 하네스 노드 등록
+    graph.add_node("harness", check_harness)    # 하네스 노드 등록
+
     # handle_tool_errors : 툴 실행중에 에러 발생시 에이전트 전체를 바로 싪패시키지 않고 오류를 처리하여 agent 대응하게 할것인가?
     graph.add_node("tools", ToolNode(TOOLS, handle_tool_errors=True) )
     # 출력 포멧 처리
@@ -152,13 +173,12 @@ def build_graph():
                                 # 분기함수가 메세지 검사-> 툴 사용확인되면 툴노드이동, 아니면 포멧노드 이동
                                 route_after_agent, 
                                 {
-                                    "tools":"harness", 
+                                    "tools":"harness", # 툴노드로 이동하라고 체크=> 하네스노드로 이동 시킨
                                     "format":"format"
                                 })
-    
-    # 하네스 노드 통과 -> 툴노드 이동
-    graph.add_node("harness", "tools")
-    
+    # 하네스 노드 통과 => 툴노드 이동
+    graph.add_edge("harness","tools")
+
     # 툴 사용 이후 방향성
     graph.add_edge("tools","agent") # 툴 사용 => 에이전트 진행
 
