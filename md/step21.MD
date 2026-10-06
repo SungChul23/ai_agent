@@ -12,12 +12,12 @@
 /
 --- 서비스 관점(백엔드)
 L app
-    L main.py    : Agent를 fastapi에서 가급적 공용으로 실행하도록 함수 추가(보정)
-    L service.py : fastapi로 백엔드 구성, /chat, /health
+    L [v] main.py    : Agent를 fastapi에서 가급적 공용으로 실행하도록 함수 추가(보정)
+    L [v] service.py : fastapi로 백엔드 구성, /chat, /health
 L steps
-    L step21_agent_service.py : 로컬에서 fastapi 구동
+    L [v] step21_agent_service.py : 로컬에서 fastapi 구동
 --- 도커
-L requirements.txt            : fastapi, uvicorn 추가
+L [v] requirements.txt            : fastapi, uvicorn 추가
 L Dockerfile                  : 에이전트 구동하는 컨테이너 이미지
 L docker-compose.yml          : 수정, 2개 서비스 (postgreSQL, agent service)
 
@@ -29,3 +29,27 @@ L infra
     L terraform             
         L *.tf              : 인프라 구성용 (버지니아 리전 사용)
 ```
+
+
+# 로컬 실행
+```
+python -m steps.step21_agent_service
+---
+http://localhost:8000/docs 접속
+- url 별로 테스트 진행 (프럼트 페이지 없이 사용 가능 -> 향후 slack/텔레그램등 기타서비스 담당)
+    - /chat  : `try it out` -> 프럼프트 구성하여 질문후 execute 버튼 클릭
+    - /heath : `try it out` -> execute 버튼 클릭
+```
+
+# Agent 컨테이너화
+- Dockerfile 구성하여 이미지 생성
+    - Fastapi + 랭그래프등
+
+# 도커 컴포즈 구성
+- 서비스
+    - Agent 컨테이너 추가
+- 컨테이너 구성
+    - DATABASE_URL: postgresql://agent:agent@postgres:5432/agentlab
+    ```
+        docker compose up --build
+    ```
