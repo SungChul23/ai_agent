@@ -18,7 +18,7 @@ def get_exchange_rate(base: str="USD", quote: str="KRW" ) -> dict:
     # 실제 외부 서비스와 통신하여 처리되는 부분을 더미로 구성
     # 환율 데이터
     rates = {
-        ("USE","KRW"):1364.30,
+        ("USD","KRW"):1364.30,
         ("EUR","KRW"):1533.61,
         ("JPY","KRW"):863.24
     }
