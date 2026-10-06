@@ -122,13 +122,16 @@ def build_graph():
     # 하네스 노드 구성
     async def check_harness(state:AgentState):
         # 1. 실행 회수 제한
+        Budget(
+            
+        )
         # 2. 해당 도구가 허락되었는지 체크 가능 -> 구성!!
         #    히스토리상, 마지막 메세지에서 툴사용(tool_calls) 표식이 있는지 체크, 있다면 값 획득
         tool_calls = getattr(state["messages"][-1], "tool_calls", [])
         for call in tool_calls:
             assert_allowed_tool( call['name'] )
-            
-        # 3. 수행시간? 이후
+
+        # 3. 수행시간? 이후 -> 위치 조정
         pass
     
     # 3-1. 그래프 생성
