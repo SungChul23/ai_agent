@@ -152,9 +152,13 @@ def build_graph():
                                 # 분기함수가 메세지 검사-> 툴 사용확인되면 툴노드이동, 아니면 포멧노드 이동
                                 route_after_agent, 
                                 {
-                                    "tools":"tools", 
+                                    "tools":"harness", 
                                     "format":"format"
                                 })
+    
+    # 하네스 노드 통과 -> 툴노드 이동
+    graph.add_node("harness", "tools")
+    
     # 툴 사용 이후 방향성
     graph.add_edge("tools","agent") # 툴 사용 => 에이전트 진행
 

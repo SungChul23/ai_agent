@@ -20,13 +20,16 @@ class Limits:
 # 에이전트가 사전에 정한 한도를 넘지 않도록 관리
 class Budget:
     # 생성자 : 맴버변수 초기화 진행(초기값 설정)
-    def __init__(self, limits:Limits|None=None):
+    def __init__(self,  
+                 tool_rounds:int = 0,
+                 start_at:float|None=None,
+                 limits:Limits|None=None):
         # 인스턴스 맴버세팅
         self.limits  = limits or Limits()
         # 정확한 시간 측정을 위해서 프로그램에 영향을 받지 않는 함수 사용
-        self.started = time.monotonic()
+        self.started = start_at or time.monotonic()
         # 툴 사용 라운드 관리
-        self.tool_rounds = 0
+        self.tool_rounds = tool_rounds
 
     # Tool 실행 할때마다 횟수, 경과 시간 검사
     def consume_tool_round(self):
