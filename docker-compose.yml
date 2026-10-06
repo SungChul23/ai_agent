@@ -17,5 +17,20 @@ services:
       timeout: 5s
       retries: 10
       start_period: 30s
+  
+  # 에이전트 서비스
+  agent:
+    build: .
+    container_name: agent-services
+    env_file:
+      - .env
+    #environment:
+    #  DATABASE_URL: postgresql://agent:agent@localhost:5432/agentlab
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
 volumes:
   agent_pgdate:
