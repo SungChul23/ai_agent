@@ -15,6 +15,8 @@ python -m venv agent
 # 윈도우
 agent\Scripts\activate
 ./agent/Scripts/activate.bat
+# 맥
+source agent/Scripts/activate
 
 (agent) ...>
 
@@ -22,13 +24,15 @@ agent\Scripts\activate
 (agent) ..> pip install -r requirements.txt
 ```
 
+# Bedrock API 키 발급
+- 30일짜리 장기키 발급 (단 리전은 버지니아에서 진행)
+
 # 환경 설정 파일
 - .env
 ```
 # .env.example 카피하여 구성
 # 추가, 뒤에 api는 별도 발급(Bedrock API 키 발급)하여 세팅
 AWS_BEARER_TOKEN_BEDROCK=
-
 ```
 
 # 임베딩모델
@@ -38,3 +42,27 @@ AWS_BEARER_TOKEN_BEDROCK=
 ```
 https://us-east-1.console.aws.amazon.com/bedrock/home?region=us-east-1#/model-catalog/serverless/amazon.titan-embed-text-v2:0
 ```
+
+# PC에 세팅된 리전 조정
+```
+# 확인
+aws configure get region
+
+# 버지니아 조정
+aws configure set region us-east-1
+```
+
+# 본 프로젝트 남은 내용
+- agent-loop
+    - 에이전트 사용 > 결과를 검증, 재시도 루프 구조
+
+- 하네스 엔지니어링
+    - 에이전트 실행에 대한 정책 계층 구성
+        - 툴 사용, 실행 버짓, 프럼프트 인젝션 방어, 테스트 코드 분리
+        - LLM의 성능, 권한, 예산, 실패등등 경계를 명확하게 구성 
+
+- 클라우드 서비스 반영
+    - 테라폼을 통한 인프라구성, postgresql -> RDS
+    - 로컬에서 구성한 서비스를 클라우드로 마이그레이션 진행
+
+- 프로젝트 형태 마무리
