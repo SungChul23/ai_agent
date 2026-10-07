@@ -53,3 +53,10 @@ http://localhost:8000/docs 접속
     ```
         docker compose up --build
     ```
+
+# 인프라 구성
+```
+versions.tf     : 필요한 provider 추가
+provider.tf     : 필요한 provider의 세부 설정 -> aws 리전
+variables.tf    : tf 구성에 필요한 모든 변수들 설정
+```
