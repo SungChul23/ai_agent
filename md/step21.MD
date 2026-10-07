@@ -72,9 +72,14 @@ rds.tf          : RDS + 백터디비 관련 구성
 deploy.tf       : 애플리케이션 배포
                   현대프로젝트=>ZIP압축=>비공개 s3 버킷 업로드
                   차후 bootstrap.sh이 ZIP을 내려 받아서 Docker Image 구성
+
+iam.tf          : ec2 role 구성, 필요권한 정책 부여
+
+ec2.tf          : Amazon Linux 2023 ec2 구성, bootstrap.sh로 user_data 전달 처리
+                  인프라 생성후 실제 서비스 자동 설치/DB 초기화(sql 마이그레이션(테이블 생성=> 데이터 삽입))/컨테이너 실행
 ```
 
-# 인프라구성
+# 인프라구성 (CI/CD 배제, 에이전트 API만 구성, 비용 최소로 구성(RDS 비용, ec2 최소,vpc 비용))
 ```
 # 초기화
 terraform init
@@ -82,4 +87,40 @@ terraform init
 terraform fmt
 # 유효성 검사
 terraform validate
+
+# 설치
+terraform apply
+---
+Outputs:
+
+api_url = "http://3.239.208.60:8000"
+chat_url = "http://3.239.208.60:8000/chat"
+ec2_public_ip = "3.239.208.60"
+health_url = "http://3.239.208.60:8000/health"
+rds_endpoint = "agent-de-ai-30-postgres.c43ekyi6yiie.us-east-1.rds.amazonaws.com"
+ssm_connect_command = "aws ssm start-session --target i-0e6c91d038b198857 --region us-east-1"
+
+# 테스트 (2분후 진행)
+- http://3.239.208.60:8000/docs 접속
+- /chat 선택 -> try it out -> 파라미터 수정
+    ```
+        `{
+            "message": "2026년 9월 판매현황 알려줘"
+         }
+    ```
+- execute 버튼 클릭 -> 에이전트 작동 -> 
+    ```
+        {
+            "answer": "## 📊 2026년 9월 판매현황 (2026-09-01 ~ 2026-09-30)\n\n### 전체 요약\n| 항목 | 값 |\n|---|---|\n| 총 매출 | 3,586,000원 |\n| 총 주문 건수 | 8건 |\n| 평균 주문 단가 | 약 448,250원 |\n\n### 매출 상위 제품 TOP 5\n| 순위 | 제품명 | 판매수량 | 매출액 |\n|---|---|---|---|\n| 1 | 사내 AI Agent 구축 | 1 | 1,200,000원 |\n| 2 | RAG 구축 컨설팅 | 1 | 800,000원 |\n| 3 | 데이터 분석 패키지 | 4 | 600,000원 |\n| 4 | AI 업무자동화 Pro | 6 | 594,000원 |\n| 5 | AI 업무자동화 Basic | 8 | 392,000원 |\n\n인사이트: 매출 1위는 '사내 AI Agent 구축' 건으로, 단건이지만 전체 매출의 약 33.5%를 차지합니다. 'AI 업무자동화 Basic'은 판매 수량(8개)이 가장 많지만, 단가가 낮아 매출 비중은 상대적으로 작습니다.\n\n추가로 동일 기간 환불 현황이나 전월 대비 비교가 필요하시면 말씀해주세요.",
+            "sources": [
+                "sales_summary 도구 결과",
+                "top_products 도구 결과"
+            ],
+            "tools_used": [
+                "sales_summary",
+                "top_products"
+            ],
+            "confidence": 0.85
+        }
+    ```
 ```
