@@ -40,10 +40,13 @@ systemctl enable --now docker
 systemctl enable --now amazon-ssm-agent || true
 
 echo "[2/8] 프로젝트 소스 다운로드"
+# 프로젝트 폴더 구성
 rm -rf "$APP_DIR"
 mkdir -p "$APP_DIR"
 cd "$APP_DIR"
+# s3로부터 소스코드 압축 파일 다운로드
 retry 12 10 aws s3 cp "s3://${source_bucket}/${source_key}" /tmp/agent-course.zip --region "${aws_region}"
+# 압축 해제
 unzip -q /tmp/agent-course.zip -d "$APP_DIR"
 
 echo "[3/8] RDS 접속정보 조회 및 .env 생성"
@@ -54,6 +57,7 @@ DATABASE_URL=$(retry 12 10 aws ssm get-parameter \
   --output text \
   --region "${aws_region}")
 
+# 환경변수 동적 구성 => 도커 파일 이미지 구성시 활용
 cat > .env <<ENVEOF
 AWS_REGION=${aws_region}
 BEDROCK_CHAT_MODEL=${chat_model}
@@ -65,6 +69,7 @@ LANGSMITH_PROJECT=agent-course-lab
 ENVEOF
 chmod 600 .env
 
+# 실행 이미지 구성
 echo "[4/8] Agent Docker image build"
 docker build -t "$IMAGE_NAME" .
 
