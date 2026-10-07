@@ -35,7 +35,7 @@ resource "aws_db_instance" "postgres" {
   # 자동 스토리지 확장시 최대 용량(GB)
   max_allocated_storage = 30
   # RDS 스토리지 타입
-  storage_type = "gp3"
+  storage_type = "gp2"
   # RDS 저장 데이터의 암호화
   storage_encrypted = true
 
