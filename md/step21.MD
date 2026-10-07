@@ -68,6 +68,10 @@ security.tf     : 보안그룹 구성(방화벽등), ec2, rds
 rds.tf          : RDS + 백터디비 관련 구성
                   비번자동생성, 접속URL 자동구성 => SSM에서 전달하도록  KMS에 저장 구조
                   코드,tf 파일에 db 비번 x
+
+deploy.tf       : 애플리케이션 배포
+                  현대프로젝트=>ZIP압축=>비공개 s3 버킷 업로드
+                  차후 bootstrap.sh이 ZIP을 내려 받아서 Docker Image 구성
 ```
 
 # 인프라구성
