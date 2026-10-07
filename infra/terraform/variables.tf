@@ -11,33 +11,25 @@ variable "project_name" {
   default = "agent-de-ai-22"
 }
 
-# EC2 관련
-# Agent/fastapi
-variable "instance_type" {
-  description = "에이전트 구동용 ec2"
+# VPC 대역
+# VPC에서 사용할 전체 IP 주소 범위
+variable "vpc_cidr" {
+  description = "VPC CIDR"
   type = string
-  default = "t3.micro"
-}
-# FastAPI(8000) 접속 IP cidr
-# 편의상 전체 개방
-variable "api_cidr" {
-  description = "FastAPI용 CIDR"
-  type = string
-  default = "0.0.0.0/0"
+  # 10.30.0.0 ~ 10.30.225.255 가용 범위
+  default = "10.30.0.0/16"
 }
 
-# Bedrock Model ID
-variable "chat_model" {
-  description = "엔트로픽 기본 모델"
+
+# EC2 관련
+# Agent/fastapi
+variable "ec2_instance_type" {
+  description = "에이전트 구동용 ec2"
   type = string
-  default = "us.anthropic.claude-sonnet-5"
+  # 최소 규모로 지정
+  default = "t3.micro"
 }
-# 임베딩 모델
-variable "embed_model" {
-  description = "임베딩 모델"
-  type = string
-  default = "amazon.titan-embed-text-v2:0"
-}
+
 # RDS내에 디비명
 variable "db_name" {
   description = "백터 디비명"
@@ -50,24 +42,41 @@ variable "db_username" {
   type = string
   default = "agent"
 }
-# RDS내에 비밀번호
-variable "db_password" {
-  description = "RDS 마스터 패스워드"
-  type = string
-  sensitive = true
-}
+# RDS내에 비밀번호 -> rds.tf 에서 랜덤으로 구성 -> SSM에서 관리 -> AWS KMS 저장
 # RDS 인스턴스 사양
 variable "db_instalce_class" {
   description = "RDS 인스턴스 유형"
   type = string
+  # 소형 스펙
   default = "db.t4g.micro"
 }
 
-# VPC 대역
-variable "vpc_cidr" {
-  description = "VPC CIDR"
+# PostgreSql 엔진 버전
+variable "postgre_version" {
+  description = "엔진 버전"
+  type = string  
+  default = "16"
+}
+# Bedrock Model ID
+variable "bedrock_chat_model" {
+  description = "엔트로픽 기본 모델"
   type = string
-  default = "10.30.0.0/16"
+  # Agent가 사용하는 Claude 모델 ID, 리전이 변경되면 `us.` 변경됨
+  default = "us.anthropic.claude-sonnet-5"
+}
+# 임베딩 모델
+variable "bedrock_embed_model" {
+  description = "임베딩 모델"
+  type = string
+  # Agent가 텍스트를 토큰화할때 사용하는 모델, 필요시 다른 토크나이저 모델 사용 가능 -> 현재 최대 1024
+  # 더 많은 텍스트를 관리 => 다른 모델 사용 => claude, gpt등에서 제공(유료), 허깅페이스 사용(무료)
+  default = "amazon.titan-embed-text-v2:0"
+}
+# Agent Memory에 대한 기본 사용자 ID
+variable "user_id" {
+  description = "임시 사용자 ID"
+  type = string  
+  default = "demo-user-22"
 }
 
 # SSH 관련 (키페어등)
