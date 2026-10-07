@@ -20,7 +20,6 @@ variable "vpc_cidr" {
   default = "10.30.0.0/16"
 }
 
-
 # EC2 관련
 # Agent/fastapi
 variable "ec2_instance_type" {
@@ -36,12 +35,14 @@ variable "db_name" {
   type = string
   default = "agentlab"
 }
+
 # RDS내에 사용자명
 variable "db_username" {
   description = "백터 디비명 접근 사용자명"
   type = string
   default = "agent"
 }
+
 # RDS내에 비밀번호 -> rds.tf 에서 랜덤으로 구성 -> SSM에서 관리 -> AWS KMS 저장
 # RDS 인스턴스 사양
 variable "db_instalce_class" {
@@ -57,6 +58,7 @@ variable "postgre_version" {
   type = string  
   default = "16"
 }
+
 # Bedrock Model ID
 variable "bedrock_chat_model" {
   description = "엔트로픽 기본 모델"
@@ -64,6 +66,7 @@ variable "bedrock_chat_model" {
   # Agent가 사용하는 Claude 모델 ID, 리전이 변경되면 `us.` 변경됨
   default = "us.anthropic.claude-sonnet-5"
 }
+
 # 임베딩 모델
 variable "bedrock_embed_model" {
   description = "임베딩 모델"
@@ -72,12 +75,24 @@ variable "bedrock_embed_model" {
   # 더 많은 텍스트를 관리 => 다른 모델 사용 => claude, gpt등에서 제공(유료), 허깅페이스 사용(무료)
   default = "amazon.titan-embed-text-v2:0"
 }
+
 # Agent Memory에 대한 기본 사용자 ID
 variable "user_id" {
   description = "임시 사용자 ID"
   type = string  
   default = "demo-user-22"
 }
+
+# FastAPI(8000) 접속 IP cidr
+# 보안그룹에서 ingress에서 활용
+# 편의상 전체 개방
+variable "api_cidr" {
+  description = "FastAPI용 CIDR"
+  type = string
+  default = "0.0.0.0/0"
+}
+
+
 
 # SSH 관련 (키페어등)
 # SSH 접근 IP 대역 => 자기자신 IP
