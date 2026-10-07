@@ -15,7 +15,7 @@ data "aws_iam_policy_document" "ec2_assume_role" {
 # role 생성
 resource "aws_iam_role" "ec2" {
   # 고유한 이름
-  name               = "${var.project_name}-ec2-role"
+  name = "${var.project_name}-ec2-role"
   # 정책 ec2.amazonaws.com 반영
   assume_role_policy = data.aws_iam_policy_document.ec2_assume_role.json
 }
@@ -23,7 +23,7 @@ resource "aws_iam_role" "ec2" {
 # SSH 키 없이 Session Manager로 접속 가능
 resource "aws_iam_role_policy_attachment" "ssm_core" {
   # role 지정
-  role       = aws_iam_role.ec2.name
+  role = aws_iam_role.ec2.name
   # AmazonSSMManagedInstanceCore 정책 반영 -> SSM 신뢰 정책 연결
   # EC2에서 IAM Role 사용 -> SSM 사용
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
@@ -35,14 +35,14 @@ resource "aws_iam_role_policy_attachment" "ssm_core" {
 # bedrock의 모델 호출 => Agent 기능 사용
 data "aws_iam_policy_document" "agent" {
   statement {
-    sid = "ReadDeploymentSource"
-    actions = ["s3:GetObject"]
+    sid       = "ReadDeploymentSource"
+    actions   = ["s3:GetObject"]
     resources = ["${aws_s3_bucket.deploy.arn}/*"]
   }
 
   statement {
-    sid = "ReadDatabaseUrl"
-    actions = ["ssm:GetParameter"]
+    sid       = "ReadDatabaseUrl"
+    actions   = ["ssm:GetParameter"]
     resources = [aws_ssm_parameter.database_url.arn]
   }
 
